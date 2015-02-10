@@ -1,0 +1,130 @@
+# Parsing references from PsycINFO for bibliometric coupling analysis
+## Kevin Lanning, February 09, 2015
+
+## 0. A heads-up
+
+This is functional, but clumsy in places. The decision to clean the data in Word, R, or Excel was determined in part by wherever I was when I found the feature in the data that needed cleaning, and in part because of my limited experience in R.
+
+Because the PSYCinfo database is proprietary, the datafiles themselves are not uploaded here.
+
+## 1. Extraction of raw references
+
+This began with a text file drawn off PsycINFO by entering a search string (eg, Journal of Personality and Social Psychology in Journal name, 2014 in year), manually clicking on the "references" button for each paper returned by the search, then copying the entire webpage as text into MS Word.
+
+## 2. Preprocessing in MS Word
+
+In Word, I removed or replaced the following strings:
+
+* Number of Cited References^p
+* Check local holdings^p
+* ^pFull-text PDF^pFull-text HTML^pReferences^p
+* Abstract^p
+* PsycINFOCited ByDOI^p
+* PsycINFOCited By^p
+* chance AbstractCited to Cited * check on 1994 2004 2009
+* change (space and comma) to comma
+* change ' Jr. ' to ' Jr '
+* also information at the top and bottom of each file not related to the references.  
+
+The result is a text file which should begin with *Journal Article* and end with either a citation or the string *Cited by n^p.* 
+Note that the 1999 file has got some words running together in PsycInfo, but the dois do not appear corrupted.
+
+## 3. From text to one line per source in R
+```{r}
+#install.packages ("stringr")
+#library (stringr)
+
+# input file specification
+txtfile <- ("1994 1999 2004 2009.txt")
+rawtext <- readLines(txtfile)
+
+# remove number (number) (number), period, optional space at beginning of record
+rawtext2 <- sub ("^[0-9]+\\.","",rawtext) 
+rawtext2 <- sub ("(^ )","",rawtext2) 
+rawtext2 <- sub ("^\\*","",rawtext2)
+rawtext2 <- sub (",Number of Citations Displayed on this Page:","\t",rawtext2)
+rawtext2 <- sub ("^[0-9]+\\.","",rawtext2) # numbers are duplicated for some sources
+head(rawtext2)
+tail(rawtext2)
+
+# works, but inelegant
+# for up to 1000 source papers, with as many as 500 papers cited in each
+results <- matrix(, nrow = 1000, ncol = 500)
+i <- 1 # lines in file
+j <- 1 # sources
+k <- 0 # references for a given source
+while (i < length(rawtext2)) {
+        if (!grepl("^(Journal Article)", rawtext2[i])) {
+                k <- k + 1
+                results[j,k] <- rawtext2 [i]
+                i <- i + 1
+                } else {
+                        i <- i + 1
+                        j <- j + 1
+                        k <- 0
+                        }
+}
+outfile <- ("1994 1999 2004 2009.csv")
+write.csv(results,outfile)
+remove (results)
+```
+
+
+## 4. Manual cleaning and checking in Excel
+
+* Removal of blank rows at end of file,
+* Find strings which have whole cell as Comment/Reply, copy from here to end of line and move to the end of the file
+* Find strings which have whole cell as Test, Erratum/Correction and Editorial; delete from here to end of line
+* Insert 4 columns after "Number of citations" column. Text to columns, splitting at : and ,
+* Sort by v5 "number of citations" column. take any rows that don't have this string and put in a separate sheet. (about 3% of references don't parse correctly)
+* delete columns which include text "number of citations" and "number of citations displayed"
+* compute difference between these two values, verify that all citations are displayed (for > 200 cites they may not be).
+* replace NAs (whole cell) as blanks
+* sort by remove columns between max cites and 500.
+* counta of entries beginning with reference.  should be nrefs + 1
+* move "cited by field" from after last ref. 
+* split citation into separate fields for each author, journal, number, page
+* for JPSP, manually entered section 
+
+## 5. To one line per edge in R
+
+```{r}
+tc <- 31 # first column of references
+maxref <- 208 # maximum number of references cited by any source
+refcol <- 30 # column in which number of references is held
+
+csvfile <- ("1994 1999 2004 2009 cleaned.csv")
+refdata.1 <- read.csv(csvfile)
+#str(refdata.1)
+
+refdata.2 <- (refdata.1[1:tc]) 
+colnames(refdata.1)[tc] <- 'target'
+
+refdata.1$index <- 1
+refdata.2 <- cbind((refdata.1[1:tc]),refdata.1$index)
+
+for (i in 2:maxref) {
+        refdata.1 <- (refdata.1[-tc])
+        refdata.1$index <- i
+        colnames(refdata.1)[tc] <- 'target'
+        refdata.2 <- rbind(refdata.2,(cbind((refdata.1[1:tc]),refdata.1$index)))
+}
+remove(refdata.1)
+refdata.3 <- refdata.2[ which(refdata.2[32] <= refdata.2[29]),]
+remove(refdata.2)
+#tail(refdata.3)
+outfile <- ("1994 1999 2004 2009 1lineedge.csv")
+write.csv(refdata.3,outfile)
+
+```
+
+Generates a file of 38,370 source -> target edges.
+
+##6. Cleaning edge file in Excel and preparation for network analyses
+
+* The target (reference) column is split into separate fields for authors, year, reference, and doi.  
+* Where the year is a translation (1665/1987) the first year is included.  Where there are multiple references in year or a month or a date are included, these additional fields are stripped. In press references are set to same year as target. This is for analysis of whether field is becoming more or less present-centric.
+* Finally, I added a column to tag whether either the Reference or Source included a paper by Stapel, to see whether there was any effect of his discredited scholarship on the network.
+
+Finally, I generated two separate files of nodes (all sources and targets, less duplicates) and edges; this was done only for those references which included doi. These are used as input for the network analyses in Gephi and Cfinder.
+
