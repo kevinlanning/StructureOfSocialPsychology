@@ -14,12 +14,18 @@ library(VennDiagram)
 # library(png)
 library (slam)
 # library (RColorBrewer)
+# library (ggplot2)
+# library (scales)
+# library (SnowballC)
+# library (qdap)
+# library (qdapDictionaries)
+# library (dplyr)
+# library (Rgraphviz)
 
 # Source of PDFs
 source <- "C:/Users/the/Dropbox/2 Social Psych structure/textanalysisofcommunities"
 texts  <- "C:/Users/the/Dropbox/2 Social Psych structure/textanalysisofcommunities/text"
-
-# dir.create(file.path(corpus), showWarnings = FALSE)
+#dir.create(file.path(corpus), showWarnings = FALSE)
 # make a vector of PDF file names
 myfiles <- list.files(path = source, pattern = "pdf",  full.names = TRUE)
 # remove spaces from filenames
@@ -29,16 +35,15 @@ sapply(myfiles, FUN = function(i){
 # get the PDF file names without spaces
 myfiles <- list.files(path = source, pattern = "pdf",  full.names = TRUE)
 
-# commented out here -runs interactively in R but not Rmd
 ############### PDF to TXT (Ben Marwick) ########################
 #lapply(myfiles, function(i) system(paste
 #          ('"C:/Program Files (x86)/xpdfbin-win-3.04/bin64/pdftotext.exe"', paste0('"', i, '"')), wait = FALSE) )
 mytext <- list.files(path = source, pattern = "txt",  full.names = TRUE)
 
 # copy text files to subdirectory then delete from original directory
-sapply(mytext, FUN = function(i){
-        file.copy(from = i, to = paste0(texts,"/", basename (i)))
-        })
+# sapply(mytext, FUN = function(i){
+#        file.copy(from = i, to = paste0(texts,"/", basename (i)))
+#        })
 #file.remove(mytext)
 ```
 
@@ -152,30 +157,28 @@ alltext <- Reduce(function(a,b){
 alltext[is.na(alltext)] <- 0
 names(alltext) <- c("sumc0","sumc1","sumc2","sumc3","sumc4","sumc5","sumc6","sumc7")
 
+# including only terms which appear n or more times in sum of all corpora
 alltextm <- addmargins(as.matrix(alltext))
 alltextm <- as.data.frame(alltextm)
 attach(alltextm)
-allpct <- scale(alltext)
-allrelfreq <- t(scale (t(allpct)))
-head(allrelfreq)
-allrfm <- addmargins(as.matrix(allrelfreq))
-
-# including only terms which appear n or more times in sum of all corpora
-
 mosttext <- subset(alltextm, Sum > 9)
 mosttext <- mosttext[1:6042,1:8] # remove the column and row sums I just added
+allpct <- scale(alltext)
 mostpct <- scale(mosttext)
+allrelfreq <- t(scale (t(allpct)))
 mostrelfreq <-t(scale (t(mostpct)))
+head(allrelfreq)
+allrfm <- addmargins(as.matrix(allrelfreq))
 mostrfm<- addmargins(as.matrix(mostrelfreq))
-
 write.csv(allpct,     "allpct.csv")
 write.csv(allrelfreq, "allrelfreq.csv")
 write.csv(alltext,    "alltext.csv")
-write.csv(allrfm,     "allrfm.csv")
 write.csv(mostpct,    "mostpct.csv")
 write.csv(mostrelfreq,"mostrelfreq.csv")
 write.csv(mosttext,   "mosttext.csv")
-write.csv(mostrfm,    "mostrfm.csv")
+write.csv(allrfm,   "allrfm.csv")
+write.csv(mostrfm,   "mostrfm.csv")
+?scale
 
 ```
 
