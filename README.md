@@ -3,6 +3,7 @@ An investigation into the structure of scholarship in social/personality psychol
 
 Based partially on earlier analyses presented at the following conferences:
 
+## Presentations
 1) American Psychological Society (San Francisco, 2014)
 
 * http://www.slideshare.net/lanningk/network-analyses-of-psych-science
@@ -24,10 +25,36 @@ Based partially on earlier analyses presented at the following conferences:
 * http://www.slideshare.net/lanningk/structure-of-social-psychology-spsp
 * Added analyses of *JPSP* 1994, 1999, 2004, 2009
 
-5)  International Convention of Psychological Science, Amsterdam, March 12-14.
+5)  International Convention of Psychological Science (ICPS), Amsterdam, March 12-14 2015
 
 * http://www.slideshare.net/lanningk/lanning-icps-2015-130x90cm
 * For 2014 data, interpretation of community structure based upon analyses of whole texts
+
+## Current status
+
+6) The structure of analyses in the ICPS paper will be extended to additional journals to provide a more comprehensive snapshot of the field.  I am adding three other prominent articles with (personality and social) in the journal title
+
+* *Personality and Social Psychology Bulletin* 
+* *Personality and Social Psychology Review* 
+* *Social Psychological and Personality Science*
+
+I expect that an analysis of these four journals (including *JPSP*) will be submitted for publication in the Spring or Summer of 2015. 
+
+7) Ideally, one would include the following dozen additional journals in social *or* (as opposed to *and*) personality psychology, namely:
+
+* *Journal of Personality*
+* *Journal of Research in Personality*
+* *European Journal of Social Psych*
+* *European Review of Social Psych* 
+* *European Monographs in Social Psychology* 
+* *European Journal of Personality* 
+* *Personality and Individual Differences* 
+* *Advances in Experimental Social Psychology*
+* *Journal of Experimental Social Psychology* 
+* *Personal Relationships* 
+* *Journal of Social and Personal Relationships*
+* *Self and Identity*  
+
 
 
 
