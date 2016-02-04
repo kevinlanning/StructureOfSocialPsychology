@@ -1,5 +1,6 @@
 # Structure Of Social Psychology
-### status as of 6/30/15
+### status as of 12/1/15: Please see SocialPsychStructure1215.pdf (submitted for pub: comments welcome)
+
 
 ## Overview
 In this project I am examining the structure of scholarship in social/personality psychology by using network analyses, analyses of community structure, and differential text analysis on 354 papers which were published in 2014 in the top four journals in social/personality psychology.  A  citation network was first formed based upon the 22945 references cited in the source papers.    This was then reduced to a structural network, consisting only of the source papers, with links between these sources based on the number of shared references.  A complex community structure was then articulated which included five large overlapping communities and 21 smaller ones. Finally, I treated the text of these different communities as distinct corpora and used text analysis to find differences between these communities.
