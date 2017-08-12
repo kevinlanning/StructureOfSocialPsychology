@@ -1,4 +1,6 @@
 # Structure Of Social Psychology
+### 8/1/2017: See https://osf.io/evx4w/ and published paer in Collabra. Related work is in progress at https://osf.io/jqtzf/
+
 ### status as of 12/1/15: Please see SocialPsychStructure1215.pdf (submitted for pub: comments welcome)
 
 
